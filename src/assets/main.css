@@ -1,0 +1,14 @@
+@import './base.css';
+
+#app {
+    width: 100vw;
+    height: 100vh;
+}
+
+.el-menu-item .el-icon {
+    margin-right: var(--el-menu-base-level-padding) !important;
+}
+
+.el-menu .el-divider {
+    margin: 0 !important;
+}
