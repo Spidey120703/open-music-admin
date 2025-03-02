@@ -3,7 +3,7 @@
 </script>
 
 <template>
-  <div>日志管理</div>
+  <h1>日志管理</h1>
 </template>
 
 <style scoped>

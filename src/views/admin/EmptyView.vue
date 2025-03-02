@@ -3,7 +3,7 @@
 </script>
 
 <template>
-  <p>用户管理</p>
+  <el-empty description="页面不存在~" />
 </template>
 
 <style scoped>

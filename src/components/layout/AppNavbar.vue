@@ -116,6 +116,7 @@ function onRefresh() {
 const isVisible = ref<boolean>(false);
 
 import { Icon } from '@iconify/vue'
+import AppBreadcrumb from '@/components/layout/AppBreadcrumb.vue'
 
 const userMenuItems = [
   { icon: User, label: '个人中心' },
@@ -140,11 +141,7 @@ const userMenuItems = [
       </el-icon>
     </el-button>
 
-    <el-breadcrumb separator="/" class="important-font-size-16px px-14px flex-1">
-      <el-breadcrumb-item :to="{ path: '/' }">主页</el-breadcrumb-item>
-      <el-breadcrumb-item><a href="/">用户管理</a></el-breadcrumb-item>
-      <el-breadcrumb-item>添加用户</el-breadcrumb-item>
-    </el-breadcrumb>
+    <AppBreadcrumb />
 
     <div class="right-menu flex items-center">
       <el-tooltip

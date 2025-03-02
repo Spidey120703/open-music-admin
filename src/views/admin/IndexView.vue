@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import AppNavbar from "@/components/AppNavbar.vue";
-import AppMenubar from '@/components/AppMenubar.vue'
-import AppTabs from '@/components/AppTabs.vue'
+import AppNavbar from "@/components/layout/AppNavbar.vue";
+import AppMenubar from '@/components/layout/AppMenubar.vue'
+import AppTabs from '@/components/layout/AppTabs.vue'
+import AppMain from '@/components/layout/AppMain.vue'
 
 const menubarCollapse = ref(false)
 </script>
@@ -21,8 +22,8 @@ const menubarCollapse = ref(false)
           <AppNavbar v-model:collapse="menubarCollapse" />
           <AppTabs />
         </el-header>
-        <el-main>
-          <router-view />
+        <el-main class="important-p-0">
+          <AppMain />
         </el-main>
       </el-container>
     </el-container>
