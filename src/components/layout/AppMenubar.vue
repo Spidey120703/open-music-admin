@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, nextTick, ref, watch } from 'vue'
+import { computed, ref } from 'vue'
 import { type RouteRecordRaw, useRoute, useRouter } from 'vue-router'
 import { Icon } from '@iconify/vue'
 import { ElMenu } from 'element-plus'
