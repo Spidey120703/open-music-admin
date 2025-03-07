@@ -33,8 +33,14 @@ const router = createRouter({
       path: '/admin',
       name: 'admin',
       component: () => import('@/views/admin/IndexView.vue'),
-      meta: { title: '管理后台' },
+      redirect: '/admin/index',
       children: [
+        {
+          path: 'index',
+          name: 'admin-index',
+          component: () => import('@/views/IndexView.vue'),
+          meta: { title: '首页', hidden: true },
+        },
         {
           path: 'empty',
           name: 'empty',

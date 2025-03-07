@@ -12,3 +12,17 @@
 .el-menu .el-divider {
     margin: 0 !important;
 }
+
+.el-menu {
+    --el-menu-base-level-padding: 16px;
+    --el-menu-item-height: 50px;
+    --el-menu-icon-width: 18px;
+}
+
+/* 修复 ElTable 中 ElTableColumn align="center" 失效的情况 */
+.el-table__body-wrapper .el-table-column--selection.is-center>.cell,
+.el-table__header-wrapper .el-table-column--selection.is-center>.cell {
+    justify-content: center;
+    min-width: 14px;
+    padding: 0;
+}

@@ -18,12 +18,12 @@ const pageTabs = ref<TabItem[]>([
   {
     icon: 'mdi:home',
     title: '主页',
-    path: '/admin'
+    path: '/admin/index'
   }
 ])
 
 const validPaths = new Set([
-  '/admin',
+  '/admin/index',
   '/admin/dashboard',
   '/admin/perm/user',
   '/admin/perm/role',
@@ -110,7 +110,7 @@ const removeTab = async (targetPath: TabPaneName) => {
       :name="item.path"
     >
       <template #label>
-        <span>
+        <span class="select-none">
           <el-icon :size="18" class="vertical-text-bottom m-r-8px">
             <Icon :icon="item.icon" />
           </el-icon>

@@ -65,18 +65,18 @@ const appMenu = ref<typeof ElMenu>()
     class="app-menu important-border-width-0 h-100vh overflow-y-auto"
   >
     <el-menu-item
-      index="/"
+      index="/admin/index"
       class="important-sticky top-0 z-9999 logo-menu-item important-c-white"
     >
       <el-icon>
         <img
           src="/src/assets/logo-transparent.svg"
           class="block w-1em h-1em transition-all scale-160"
-          alt="Open Music 管理后台 LOGO"
+          alt="OpenMusic 管理后台 LOGO"
         />
       </el-icon>
       <template #title>
-        <span class="font-bold">Open Music 管理后台</span>
+        <span class="font-bold">OpenMusic 管理后台</span>
       </template>
     </el-menu-item>
     <el-divider style="--el-border-color: #1f2d3d" class="important-sticky z-9999" />

@@ -141,7 +141,7 @@ const userMenuItems = [
       </el-icon>
     </el-button>
 
-    <AppBreadcrumb />
+    <AppBreadcrumb class="flex-1" />
 
     <div class="right-menu flex items-center">
       <el-tooltip
