@@ -70,12 +70,6 @@ const router = createRouter({
               component: () => import('@/views/admin/perm/RoleManage.vue'),
               meta: { icon: 'mdi:key', title: '角色管理' }
             },
-            {
-              path: 'log',
-              name: 'perm-log',
-              component: () => import('@/views/admin/perm/LogManage.vue'),
-              meta: { icon: 'mdi:text-box', title: '日志管理' }
-            },
           ],
         },
         {
@@ -94,6 +88,12 @@ const router = createRouter({
               name: 'sys-home',
               component: () => import('@/views/admin/sys/HomePageManage.vue'),
               meta: { icon: 'mdi:home', title: '首页配置' }
+            },
+            {
+              path: 'log',
+              name: 'perm-log',
+              component: () => import('@/views/admin/sys/LogManage.vue'),
+              meta: { icon: 'mdi:text-box', title: '日志管理' }
             },
           ],
         },

@@ -5,7 +5,7 @@
 <template>
   <section class="w-100% h-100% overflow-hidden">
     <transition name="fade-transform" mode="out-in">
-      <div :key="$route.fullPath" class="pa-20px">
+      <div :key="$route.fullPath" class="w-100% h-100% pa-20px">
         <router-view v-slot="{ Component }">
           <keep-alive :max="10">
             <component :is="Component" />

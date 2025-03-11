@@ -38,7 +38,6 @@ const activeIndex = computed(() => {
           :key="parentRoute.path"
           v-popover="popoverRef"
           v-click-outside="onClickOutside"
-          @click="visible = !visible"
           :to="{}"
         >
           {{ parentRoute.meta.title }}
@@ -50,7 +49,7 @@ const activeIndex = computed(() => {
     </el-breadcrumb>
 
     <el-popover
-      v-if="parentRoute?.children"
+      v-if="parentRoute && parentRoute?.children"
       v-model:visible="visible"
       ref="popoverRef"
       trigger="click"
@@ -96,7 +95,7 @@ const activeIndex = computed(() => {
 
 .breadcrumb-enter-active {
   opacity: 0;
-  transform: translateX(-30px);
+  transform: translateX(30px);
 }
 
 .breadcrumb-enter-to {
