@@ -12,17 +12,16 @@ const menubarCollapse = ref(false)
   <div class="w-100% h-100%">
     <el-container class="w-100% h-100%">
       <el-aside
-        style="width: auto;"
-        class="bg-gray"
+        class="w-auto! bg-gray"
       >
         <AppMenubar :collapse="menubarCollapse" />
       </el-aside>
       <el-container>
-        <el-header height="auto" class="important-p-0">
+        <el-header height="auto" class="p-0!">
           <AppNavbar v-model:collapse="menubarCollapse" />
           <AppTabs />
         </el-header>
-        <el-main class="important-p-0">
+        <el-main class="p-0!">
           <AppMain />
         </el-main>
       </el-container>

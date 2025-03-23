@@ -65,7 +65,7 @@ watch(navbarSearchHidden, (newVal) => {
   }
 })
 
-const searchInput: Ref<String> = ref('')
+const searchInput: Ref<string> = ref('')
 const searchOptions = [
   { label: '用户管理', value: '/users' },
   { label: '资源管理', value: '/medias' },
@@ -132,7 +132,7 @@ const userMenuItems = [
     <el-button
       text
       size="large"
-      class="important-px-18px important-h-100%"
+      class="px-18px! h-100%!"
       @click="menubarCollapsed = !menubarCollapsed"
     >
       <el-icon size="20px">
@@ -184,7 +184,7 @@ const userMenuItems = [
       <el-button
         text
         size="large"
-        class="important-px-12px important-h-100%"
+        class="px-12px h-100%"
         @click="isFullScreen = !isFullScreen"
       >
         <el-icon size="20px">
@@ -198,7 +198,7 @@ const userMenuItems = [
       <el-button
         text
         size="large"
-        class="important-px-12px important-h-100%"
+        class="px-12px h-100%"
         @click="onRefresh"
       >
         <el-icon size="20px" :class="{ 'transform-rotate--360 transition-transform transition-duration-300': isRefreshing }"><Refresh /></el-icon>
@@ -211,13 +211,13 @@ const userMenuItems = [
       :show-arrow="false"
       trigger="click"
       v-model:visible="isVisible"
-      popper-class="important-pa-0 overflow-hidden"
+      popper-class="pa-0! overflow-hidden"
     >
       <template #reference>
         <el-button
           text
           size="large"
-          class="important-px-12px important-h-100%"
+          class="px-12px! h-100%!"
         >
           <el-avatar />
           <div class="text-align-left px-12px lh-18px w-128px">
@@ -234,7 +234,7 @@ const userMenuItems = [
         <div>
           <el-tag type="primary">超级管理员</el-tag>
         </div>
-        <el-divider class="important-mb-0 important-mt-10px" />
+        <el-divider class="mb-0! mt-10px!" />
         <el-menu
           class="w-100%"
           style="--el-menu-item-height: 36px; --el-menu-border-color: transparent;"
@@ -254,7 +254,7 @@ const userMenuItems = [
       <el-button
         text
         size="large"
-        class="important-px-18px important-h-100% hover:important-bg-red hover:important-color-white"
+        class="px-18px! h-100%! hover:bg-red! hover:color-white!"
         @click="menubarCollapsed = !menubarCollapsed"
       >
         <el-icon size="20px">

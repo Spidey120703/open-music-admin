@@ -23,16 +23,52 @@ export default defineConfigWithVueTs(
 
   pluginVue.configs['flat/essential'],
   vueTsConfigs.recommended,
-  
+
   {
     ...pluginVitest.configs.recommended,
     files: ['src/**/__tests__/*'],
   },
-  
+
   {
     ...pluginPlaywright.configs['flat/recommended'],
     files: ['e2e/**/*.{test,spec}.{js,ts,jsx,tsx}'],
   },
   oxlint.configs['flat/recommended'],
   skipFormatting,
+  {
+    files: ['**/*.vue'],
+    languageOptions: {
+      parserOptions: {
+        parser: '@typescript-eslint/parser',
+        ecmaVersion: 'latest',
+        sourceType: 'module',
+        ecmaFeatures: {
+          jsx: true,
+        },
+      }
+    },
+    rules: {
+      'vue/block-lang': ['error', {
+        script: {
+          lang: ['ts', 'tsx']
+        },
+      }]
+    }
+  },
+  {
+    files: ['**/*.{ts,tsx}'],
+    languageOptions: {
+      parserOptions: {
+        parser: '@typescript-eslint/parser',
+        ecmaVersion: 'latest',
+        sourceType: 'module',
+      }
+    },
+  },
+  {
+    files: ['**/*.{ts,tsx,vue}'],
+    rules: {
+      '@typescript-eslint/no-explicit-any': 'warn',
+    }
+  }
 )

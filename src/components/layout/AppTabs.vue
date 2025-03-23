@@ -98,7 +98,7 @@ const removeTab = async (targetPath: TabPaneName) => {
   <el-tabs
     v-model="pageTabsValue"
     type="border-card"
-    class="important-border-width-0"
+    class="b-width-0!"
     closable
     @tab-change="(tab: string) => router.push(tab)"
     @tab-remove="removeTab"

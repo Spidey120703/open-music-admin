@@ -30,7 +30,7 @@ const activeIndex = computed(() => {
 
 <template>
   <div>
-    <el-breadcrumb :separator-icon="ArrowRight" class="important-font-size-16px px-14px">
+    <el-breadcrumb :separator-icon="ArrowRight" class="font-size-16px! px-14px">
       <transition-group name="breadcrumb">
         <el-breadcrumb-item to="/admin/index" :key="INDEX_PATH">首页</el-breadcrumb-item>
         <el-breadcrumb-item
@@ -56,9 +56,9 @@ const activeIndex = computed(() => {
       placement="right"
       :show-arrow="false"
       virtual-triggering
-      popper-class="important-px-0 important-py-5px overflow-hidden important-top-50px transform-translate-x--36px important-min-w-200px"
+      popper-class="px-0! py-5px! overflow-hidden top-50px! transform-translate-x--36px min-w-200px!"
     >
-      <el-menu router class="important-border-width-0" :default-active="activeIndex">
+      <el-menu router class="b-width-0!" :default-active="activeIndex">
         <el-menu-item
           v-for="route in parentRoute.children"
           :key="route.name"

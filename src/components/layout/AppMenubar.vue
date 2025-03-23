@@ -62,11 +62,11 @@ const appMenu = ref<typeof ElMenu>()
     :default-active="activeIndex"
     @select="handleSelect"
     router
-    class="app-menu important-border-width-0 h-100vh overflow-y-auto"
+    class="app-menu b-width-0! h-100vh overflow-y-auto"
   >
     <el-menu-item
       index="/admin/index"
-      class="important-sticky top-0 z-9999 logo-menu-item important-c-white"
+      class="sticky! top-0 z-9999 logo-menu-item c-white!"
     >
       <el-icon>
         <img
@@ -79,7 +79,7 @@ const appMenu = ref<typeof ElMenu>()
         <span class="font-bold">OpenMusic 管理后台</span>
       </template>
     </el-menu-item>
-    <el-divider style="--el-border-color: #1f2d3d" class="important-sticky z-9999" />
+    <el-divider style="--el-border-color: #1f2d3d" class="sticky! z-9999" />
     <template v-for="item in menuItems" :key="item.path">
       <el-sub-menu v-if="item.children?.length" :index="item.path">
         <template #title>
