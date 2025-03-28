@@ -17,7 +17,7 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
-    "@types/lodash": "^4.17.16",
+    "@popperjs/core": "^2.11.8",
     "axios": "^1.8.3",
     "dayjs": "^1.11.13",
     "element-plus": "^2.9.3",
@@ -33,6 +33,7 @@
     "@playwright/test": "^1.49.1",
     "@tsconfig/node22": "^22.0.0",
     "@types/jsdom": "^21.1.7",
+    "@types/lodash": "^4.17.16",
     "@types/node": "^22.10.7",
     "@types/qs": "^6.9.18",
     "@vitejs/plugin-vue": "^5.2.1",

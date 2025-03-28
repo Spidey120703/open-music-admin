@@ -2,7 +2,7 @@ import { request } from '@/utils/request.ts'
 import type { User } from '@/types/dto.ts'
 import type { ApiParams } from '@/types/request.ts'
 
-export function getUsers(params: ApiParams<User>) {
+export function getUsersByPage(params: ApiParams<User>) {
   return request.get('/user', {
     params,
   })
@@ -12,13 +12,13 @@ export function getUserById(id: number) {
   return request.get(`/user/${id}`)
 }
 
-export function createUser(data: User) {
+export function createUser(data: Partial<User>) {
   return request.post('/user', {
     data
   })
 }
 
-export function updateUserById(id: number, data: User) {
+export function updateUserById(id: number, data: Partial<User>) {
   return request.put(`/user/${id}`, data)
 }
 

@@ -1,23 +1,15 @@
-import { createRouter, createWebHashHistory } from 'vue-router'
-// import HomeView from '../views/HomeView.vue'
+import {
+  createRouter,
+  createWebHashHistory,
+  isNavigationFailure,
+  type LocationQuery
+} from 'vue-router'
+import qs from 'qs'
 
 const router = createRouter({
   // history: createWebHistory(import.meta.env.BASE_URL),
   history: createWebHashHistory(import.meta.env.BASE_URL),
   routes: [
-    // {
-    //   path: '/',
-    //   name: 'home',
-    //   component: HomeView,
-    // },
-    // {
-    //   path: '/about',
-    //   name: 'about',
-    //   // route level code-splitting
-    //   // this generates a separate chunk (About.[hash].js) for this route
-    //   // which is lazy-loaded when the route is visited.
-    //   component: () => import('../views/AboutView.vue'),
-    // },
     {
       path: '/',
       name: 'index',
@@ -41,12 +33,6 @@ const router = createRouter({
           name: 'admin-index',
           component: () => import('@/views/IndexView.vue'),
           meta: { title: '首页', hidden: true },
-        },
-        {
-          path: 'empty',
-          name: 'empty',
-          component: () => import('@/views/admin/EmptyView.vue'),
-          meta: { hidden: true },
         },
         {
           path: 'dashboard',
@@ -180,9 +166,42 @@ const router = createRouter({
             },
           ],
         },
+        {
+          path: ':pathMatch(.*)*',
+          name: 'admin-empty',
+          component: () => import('@/views/EmptyView.vue'),
+          meta: { hidden: true },
+        },
       ],
     },
+    {
+      path: '/:pathMatch(.*)*',
+      name: 'empty',
+      component: () => import('@/views/EmptyView.vue'),
+      meta: { hidden: true },
+    },
   ],
+  parseQuery: qs.parse as (search: string) => LocationQuery,
+  stringifyQuery: qs.stringify,
+})
+
+router.afterEach((to, from, failure) => {
+  if (isNavigationFailure(failure)) {
+    console.warn('from: ', from, ', to: ', to, ', failed navigation: ', failure)
+  }
+})
+
+// TODO: 登录校验
+function isAuthenticated() {
+  return true
+}
+
+router.beforeEach((to, from, next) => {
+  if (to.path.startsWith('/admin') && ! isAuthenticated()) {
+    next({ name: 'login' })
+  } else {
+    next()
+  }
 })
 
 export default router

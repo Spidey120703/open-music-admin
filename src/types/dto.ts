@@ -22,3 +22,18 @@ export interface User {
   role?: Role
   registeredAt?: string | Date
 }
+
+export interface Menu {
+  id?: number;
+  name: string;
+  route: string;
+  icon?: string;
+  title?: string;
+  hidden?: boolean;
+  parentId?: number;
+  parent?: Menu;
+  children?: Menu[];
+  hasChildren?: boolean;
+  createdAt?: string;
+  deleted?: boolean;
+}

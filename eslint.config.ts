@@ -35,6 +35,7 @@ export default defineConfigWithVueTs(
   },
   oxlint.configs['flat/recommended'],
   skipFormatting,
+  // costumed configs
   {
     files: ['**/*.vue'],
     languageOptions: {
@@ -68,7 +69,13 @@ export default defineConfigWithVueTs(
   {
     files: ['**/*.{ts,tsx,vue}'],
     rules: {
-      '@typescript-eslint/no-explicit-any': 'warn',
+      '@typescript-eslint/no-explicit-any': 'off',
+    }
+  },
+  {
+    files: ['**/components/**/*.vue'],
+    rules: {
+      'vue/multi-word-component-names': 'off',
     }
   }
 )

@@ -1,11 +1,12 @@
 <script setup lang="ts">
-
-import BaseTable from '@/components/common/BaseTable.vue'
+import { Table } from '@/components/common'
 import { ElTagX } from '@/tsx'
-import { getRoles } from '@/apis/role.ts'
+import { getRolesByPage } from '@/api/role.ts'
+import type { Role } from '@/types'
+import { reactive } from 'vue'
+import type { Columns } from '@/components/common/Table/types.ts'
 
-
-const columns = [
+const columns = reactive<Columns>([
   {
     label: '编号',
     prop: 'id',
@@ -32,15 +33,14 @@ const columns = [
       { text: 'info', value: 'info' },
       { text: 'primary', value: 'primary' },
     ],
-    slot: (row: Record<string, unknown>) => ElTagX(row.type, row.type)
+    slot: (row: Role) => ElTagX(row.type, row.type),
   },
-]
-
+])
 </script>
 
 <template>
-  <base-table
-    :load-data="getRoles"
+  <Table
+    :load-data="getRolesByPage"
     :columns="columns"
     searchable
     selection
@@ -51,6 +51,4 @@ const columns = [
   />
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

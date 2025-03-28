@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { type Ref, ref, computed, watch, nextTick } from 'vue'
+import { type Ref, ref, computed, watch, nextTick, defineAsyncComponent } from 'vue'
 import { ElSelect } from 'element-plus'
 import {
   Expand,
@@ -113,18 +113,10 @@ function onRefresh() {
   }, 300)
 }
 
-const isVisible = ref<boolean>(false);
+const AppBreadcrumb = defineAsyncComponent(() => import('@/components/layout/AppBreadcrumb.vue'))
+const AppUserCard = defineAsyncComponent(() => import('@/components/layout/AppUserCard.vue'))
 
-import { Icon } from '@iconify/vue'
-import AppBreadcrumb from '@/components/layout/AppBreadcrumb.vue'
 
-const userMenuItems = [
-  { icon: User, label: '个人中心' },
-  { icon: Lock, label: '密码管理' },
-  { icon: Clock, label: '操作记录' },
-  { divider: true },
-  { icon: Icon, props: { icon: 'mdi:logout' }, label: '退出登录' },
-]
 </script>
 
 <template>
@@ -184,7 +176,7 @@ const userMenuItems = [
       <el-button
         text
         size="large"
-        class="px-12px h-100%"
+        class="px-12px! h-100%!"
         @click="isFullScreen = !isFullScreen"
       >
         <el-icon size="20px">
@@ -198,57 +190,14 @@ const userMenuItems = [
       <el-button
         text
         size="large"
-        class="px-12px h-100%"
+        class="px-12px! h-100%!"
         @click="onRefresh"
       >
         <el-icon size="20px" :class="{ 'transform-rotate--360 transition-transform transition-duration-300': isRefreshing }"><Refresh /></el-icon>
       </el-button>
     </el-tooltip>
 
-    <el-popover
-      placement="top-start"
-      :width="206"
-      :show-arrow="false"
-      trigger="click"
-      v-model:visible="isVisible"
-      popper-class="pa-0! overflow-hidden"
-    >
-      <template #reference>
-        <el-button
-          text
-          size="large"
-          class="px-12px! h-100%!"
-        >
-          <el-avatar />
-          <div class="text-align-left px-12px lh-18px w-128px">
-            <div>Administrator</div>
-            <div class="font-size-.9em">超级管理员</div>
-          </div>
-          <el-icon class="transition-transform" :class="{ 'rotate-180': isVisible }"><ArrowDown /></el-icon>
-        </el-button>
-      </template>
-      <div class="flex flex-col items-center">
-        <div class="bg-gray w-100% h-80px" />
-        <el-avatar size="large" style="margin-top: calc(-1 * var(--el-avatar-size) / 2)" />
-        <h3>Administrator</h3>
-        <div>
-          <el-tag type="primary">超级管理员</el-tag>
-        </div>
-        <el-divider class="mb-0! mt-10px!" />
-        <el-menu
-          class="w-100%"
-          style="--el-menu-item-height: 36px; --el-menu-border-color: transparent;"
-        >
-          <template v-for="(item, i) in userMenuItems">
-            <el-divider v-if="item.divider" :key="`el-divider-${i}`" />
-            <el-menu-item v-else :key="`el-menu-item-${i}`">
-              <el-icon><Component :is="item.icon" v-bind="item.props || {}" /></el-icon>
-              <span>{{ item.label }}</span>
-            </el-menu-item>
-          </template>
-        </el-menu>
-      </div>
-    </el-popover>
+    <AppUserCard />
 
     <el-tooltip content="退出系统" placement="bottom" :hide-after="0" :auto-close="1000">
       <el-button
