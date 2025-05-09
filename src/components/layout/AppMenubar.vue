@@ -66,7 +66,7 @@ const appMenu = ref<typeof ElMenu>()
   >
     <el-menu-item
       index="/admin/index"
-      class="sticky! top-0 z-9999 logo-menu-item c-white!"
+      class="sticky! top-0 z-1 logo-menu-item c-white! h-[calc(var(--el-menu-item-height)-1px)]!"
     >
       <el-icon>
         <img
@@ -79,7 +79,7 @@ const appMenu = ref<typeof ElMenu>()
         <span class="font-bold">OpenMusic 管理后台</span>
       </template>
     </el-menu-item>
-    <el-divider style="--el-border-color: #1f2d3d" class="sticky! z-9999" />
+    <el-divider style="--el-border-color: #1f2d3d" class="sticky! z-1" />
     <template v-for="item in menuItems" :key="item.path">
       <el-sub-menu v-if="item.children?.length" :index="item.path">
         <template #title>
@@ -143,7 +143,7 @@ const appMenu = ref<typeof ElMenu>()
   background: var(--el-menu-hover-bg-color);
 }
 .el-menu .el-menu-item.logo-menu-item + .el-divider {
-  top: var(--el-menu-item-height);
+  top: calc(var(--el-menu-item-height) - 1px);
 }
 
 .el-menu:not(.el-menu--collapse) {
@@ -159,6 +159,7 @@ const appMenu = ref<typeof ElMenu>()
   --el-menu-hover-bg-color: #001528;
 }
 
+/*
 @media (min-width: 768px) {
   .el-menu:not(.el-menu--collapse) {
     width: 210px;
@@ -170,4 +171,5 @@ const appMenu = ref<typeof ElMenu>()
     width: 100vw;
   }
 }
+*/
 </style>

@@ -1,7 +1,9 @@
-import Table from '@/components/common/Table/index.vue'
-import Index from '@/components/common/Icon/index.vue'
+import OTable from '@/components/common/Table/index.vue'
+import OIcon from '@/components/common/Icon/index.vue'
+import OFormDialog from '@/components/common/FormDialog/index.vue'
 
 export {
-  Table,
-  Index
+  OTable,
+  OIcon,
+  OFormDialog
 }

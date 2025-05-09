@@ -12,10 +12,8 @@ export function getUserById(id: number) {
   return request.get(`/user/${id}`)
 }
 
-export function createUser(data: Partial<User>) {
-  return request.post('/user', {
-    data
-  })
+export function addUser(data: Partial<User>) {
+  return request.post('/user', data)
 }
 
 export function updateUserById(id: number, data: Partial<User>) {

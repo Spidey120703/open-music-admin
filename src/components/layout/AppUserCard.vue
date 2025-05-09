@@ -46,7 +46,16 @@ defineExpose({ openDialog })
       </el-button>
     </template>
     <div class="flex flex-col items-center">
-      <div class="bg-gray w-100% h-80px" />
+      <div
+        class="bg-gray w-100% h-80px"
+        :style="{
+          backgroundImage: `url(/src/assets/imgs/background.jpg)`
+        }"
+        style="
+          background-size: cover;
+          background-position: center;
+        "
+      />
       <el-avatar size="large" style="margin-top: calc(-1 * var(--el-avatar-size) / 2)" />
       <h3>Administrator</h3>
       <div>

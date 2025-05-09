@@ -5,6 +5,8 @@ import {
   type LocationQuery
 } from 'vue-router'
 import qs from 'qs'
+import { useAuthorizationStore } from '@/stores/authorization.ts'
+import { useMessage } from '@/composables/message.ts'
 
 const router = createRouter({
   // history: createWebHistory(import.meta.env.BASE_URL),
@@ -37,7 +39,7 @@ const router = createRouter({
         {
           path: 'dashboard',
           name: 'dashboard',
-          component: () => import('@/views/admin/DashboardView.vue'),
+          component: () => import('@/views/admin/DashboardManage.vue'),
           meta: { icon: 'mdi:view-dashboard', title: '仪表盘' },
         },
         {
@@ -71,14 +73,14 @@ const router = createRouter({
               meta: { icon: 'mdi:menu', title: '菜单配置' }
             },
             {
-              path: 'home',
+              path: 'home-page',
               name: 'sys-home',
               component: () => import('@/views/admin/sys/HomePageManage.vue'),
               meta: { icon: 'mdi:home', title: '首页配置' }
             },
             {
               path: 'log',
-              name: 'perm-log',
+              name: 'sys-log',
               component: () => import('@/views/admin/sys/LogManage.vue'),
               meta: { icon: 'mdi:text-box', title: '日志管理' }
             },
@@ -92,19 +94,19 @@ const router = createRouter({
             {
               path: 'info',
               name: 'user-info',
-              component: () => import('@/views/admin/user/UserInfo.vue'),
+              component: () => import('@/views/admin/user/UserInfoManage.vue'),
               meta: { icon: 'mdi:account', title: '账户信息' }
             },
             {
               path: 'password',
               name: 'user-password',
-              component: () => import('@/views/admin/user/UserPassword.vue'),
+              component: () => import('@/views/admin/user/UserPasswordManage.vue'),
               meta: { icon: 'mdi:shield-lock', title: '密码管理' }
             },
             {
               path: 'device',
               name: 'user-device',
-              component: () => import('@/views/admin/user/UserDevice.vue'),
+              component: () => import('@/views/admin/user/UserDeviceManage.vue'),
               meta: { icon: 'mdi:desktop-mac', title: '设备管理' }
             },
           ],
@@ -137,19 +139,19 @@ const router = createRouter({
         {
           path: 'post',
           name: 'post',
-          meta: { icon: 'mdi:book-open', title: '内容管理' },
+          meta: { icon: 'mdi:book-open', title: '内容审核' },
           children: [
             {
               path: 'article',
               name: 'post-article',
               component: () => import('@/views/admin/post/ArticleManage.vue'),
-              meta: { icon: 'mdi:book-open', title: '文章管理' }
+              meta: { icon: 'mdi:book-open', title: '文章审核' }
             },
             {
               path: 'comment',
               name: 'post-comment',
               component: () => import('@/views/admin/post/CommentManage.vue'),
-              meta: { icon: 'mdi:comment-text', title: '评论管理' }
+              meta: { icon: 'mdi:comment-text', title: '评论审核' }
             },
           ],
         },
@@ -191,14 +193,15 @@ router.afterEach((to, from, failure) => {
   }
 })
 
-// TODO: 登录校验
 function isAuthenticated() {
-  return true
+  return useAuthorizationStore().hasToken()
 }
 
 router.beforeEach((to, from, next) => {
   if (to.path.startsWith('/admin') && ! isAuthenticated()) {
-    next({ name: 'login' })
+    useMessage().warning('请先登录账户后再尝试访问！')
+    // console.log(to.fullPath)
+    next({ name: 'login', query: { redirect: to.fullPath } })
   } else {
     next()
   }

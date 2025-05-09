@@ -1,4 +1,4 @@
-import type { Component, Ref, VNode } from 'vue'
+import type { Component, Raw, Ref, VNode } from 'vue'
 import type { ElButtonType, ElPopPlacement, ElTagType } from '@/types'
 import type { IconEntity } from '@/components/common/Icon/types.ts'
 
@@ -17,7 +17,7 @@ export interface Column {
   label: string
   prop: string
   columnKey?: string
-  type?: 'default' | 'selection' | 'index' | 'expand'
+  type?: 'default' | 'selection' | string
   width?: string | number
   align?: 'left' | 'center' | 'right'
   sortable?: boolean
@@ -36,7 +36,7 @@ export interface PopConfirm {
   cancelText?: string
   confirmType?: ElButtonType
   cancelType?: ElButtonType
-  icon?: IconEntity
+  icon?: IconEntity | Raw<IconEntity>
   iconColor?: string
   hideIcon?: boolean
   hideAfter?: number
@@ -51,6 +51,7 @@ export interface Operation {
   label: string
   type?: ElTagType
   icon?: Component | string
+  condition?: (row?: Row) => boolean
   action?: (row?: Row) => void
   popConfirm?: PopConfirm
 }

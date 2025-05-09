@@ -1,11 +1,32 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { provide, ref, unref } from 'vue'
 import AppNavbar from "@/components/layout/AppNavbar.vue";
 import AppMenubar from '@/components/layout/AppMenubar.vue'
 import AppTabs from '@/components/layout/AppTabs.vue'
 import AppMain from '@/components/layout/AppMain.vue'
+import { emitter } from '@/utils/emitter.ts'
 
 const menubarCollapse = ref(false)
+
+const useGlobalRefreshOperation = () => {
+  const refreshHook = ref<() => void>()
+  const setupRefreshHook = (hook: () => void) => {
+    refreshHook.value = hook
+  }
+
+  emitter.on('refresh', () => {
+    unref(refreshHook)?.()
+  })
+
+  return {
+    onRefresh: setupRefreshHook
+  }
+}
+
+const { onRefresh } = useGlobalRefreshOperation()
+
+provide('onRefresh', onRefresh)
+
 </script>
 
 <template>

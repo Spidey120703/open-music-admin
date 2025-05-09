@@ -1,4 +1,4 @@
-import type { ApiParams, Menu } from '@/types'
+import type { Menu } from '@/types'
 import { request } from '@/utils/request'
 
 export function getMenuById(menuId: number) {
@@ -25,16 +25,12 @@ export function getMenusByParentIdLazy(parentMenuId: number) {
   return request.get(`/menu/${parentMenuId}/children/lazy`)
 }
 
-export function createMenu(data: Partial<Menu>) {
-  return request.post('/menu', {
-    data
-  })
+export function addMenu(parentMenuId: number, data: Partial<Menu>) {
+  return request.post(`/menu/${parentMenuId}`, data)
 }
 
 export function updateMenu(menuId: number, data: Partial<Menu>) {
-  return request.put(`/menu/${menuId}`, {
-    data
-  })
+  return request.put(`/menu/${menuId}`, data)
 }
 
 export function deleteMenu(menuId: number) {

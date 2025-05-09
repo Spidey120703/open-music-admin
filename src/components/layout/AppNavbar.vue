@@ -14,6 +14,7 @@ import {
   Lock,
   Clock,
 } from '@element-plus/icons-vue'
+import { emitter } from '@/utils/emitter.ts'
 
 const props = defineProps({
   collapse: {
@@ -107,6 +108,7 @@ watch(isFullScreen, (newVal) => {
 const isRefreshing = ref<boolean>(false);
 function onRefresh() {
   if (isRefreshing.value) return;
+  emitter.emit('refresh');
   isRefreshing.value = true;
   setTimeout(() => {
     isRefreshing.value = false;

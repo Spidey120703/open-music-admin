@@ -5,7 +5,7 @@ export type ApiError<T = any> = AxiosError<ResData<T>>
 
 export interface ResData<T> {
   readonly code: number
-  readonly message: string
+  readonly msg: string
   readonly data: T
 }
 
