@@ -32,6 +32,6 @@ export interface FormItemConfig {
 
   // 扩展属性
   span?: number;
-  type?: 'input' | 'textarea' | 'padding' | 'select' | 'mention' | 'segmented' | 'autocomplete' | string;
+  type?: 'input' | 'textarea' | 'padding' | 'select' | 'mention' | 'segmented' | 'autocomplete' | 'input-tag' | 'date-picker' | 'input-number' | string;
   config?: Record<string, any>;
 }

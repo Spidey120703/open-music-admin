@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { ref, reactive, onMounted, computed } from 'vue'
+import { ref, reactive, computed, markRaw, type Component, watch } from 'vue'
 import type { ElTagConfig, Role, User, UserStatus } from '@/types'
 import { OTable } from '@/components/common'
-import { getRolesByPage } from '@/api/role.ts'
 import { getUsersByPage, deleteUserById } from '@/api/user.ts'
 import { ElTagX } from '@/tsx'
-import type { Columns } from '@/components/common/Table/types.ts'
+import type { Columns, Operations } from '@/components/common/Table/types.ts'
 import { datetimeFormatter } from '@/components/common/Table/utils.ts'
+import { Lock } from '@element-plus/icons-vue'
 
 const UserStatusConfig: Record<UserStatus, ElTagConfig> = {
   active: {
@@ -42,10 +42,15 @@ const statusFilters = computed(() => {
   }))
 })
 
-const roleFilters = ref([])
-onMounted(async () => {
-  const { data } = await getRolesByPage({ size: -1 })
-  roleFilters.value = data.data.records.map((item: Role) => ({
+const props = defineProps<{
+  roles: Role[]
+}>()
+
+const roleFilters = ref<{ text: string, value: any }[]>([])
+watch(
+  () => props.roles,
+  (roles) => {
+  roleFilters.value = roles.map((item: Role) => ({
     text: item.label,
     value: item.id,
   }))
@@ -109,15 +114,26 @@ const columns = reactive<Columns>([
   },
 ])
 
-const emit = defineEmits(['add', 'edit'])
+const emit = defineEmits(['add', 'edit', 'reset-password'])
 
 const handleAddition = () => {
   emit('add')
 }
 
-const handleEdition = (row: Role) => {
+const handleEdition = (row: User) => {
   emit('edit', row.id)
 }
+
+const operations: Operations = [
+  {
+    label: '密码',
+    icon: markRaw<Component>(Lock),
+    type: 'primary',
+    action: (row: User) => {
+      emit('reset-password', row.id)
+    }
+  }
+]
 
 </script>
 
@@ -126,6 +142,7 @@ const handleEdition = (row: Role) => {
     :load-data="getUsersByPage"
     :delete-data="deleteUserById"
     :columns="columns"
+    :operations="operations"
     searchable
     selection
     addition

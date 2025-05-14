@@ -1,8 +1,12 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
-import { type RouteRecordRaw, useRoute, useRouter } from 'vue-router'
-import { Icon } from '@iconify/vue'
+import { computed, onMounted, ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { OIcon } from '@/components/common'
 import { ElMenu } from 'element-plus'
+import type { ApiResponse, Menu } from '@/types'
+import { getMenus } from '@/api/menu.ts'
+import { useMenuItemsStore } from '@/stores/menu.ts'
+import { storeToRefs } from 'pinia'
 
 const route = useRoute()
 const router = useRouter()
@@ -16,40 +20,10 @@ const props = defineProps({
 const activeIndex = computed(() => {
   return route.path || '/admin'
 })
-function handleSelect(key: string) {
-  console.log(key)
-}
 
-interface MenuItem {
-  title: string
-  icon: string
-  path: string
-  children?: MenuItem[]
-}
+const state = useMenuItemsStore()
+const { menuItems } = storeToRefs(state)
 
-const menuItems = computed(() => {
-  const adminRoute = router.options.routes.find(r => r.path === '/admin')
-  if (! adminRoute) return []
-
-  const recursiveBuild = (route: RouteRecordRaw, basePath = ''): MenuItem[] => {
-    return (route.children || [])
-      .filter(r => ! r.meta?.hidden)
-      .map(child => {
-        const fullPath = `${basePath}/${child.path}`.replace(/\/+/g, '/')
-
-        return {
-          title: child.meta?.title as string,
-          icon: child.meta?.icon as string,
-          path: fullPath,
-          children: child.children?.length
-            ? recursiveBuild(child, fullPath)
-            : undefined
-        }
-    })
-  }
-
-  return recursiveBuild(adminRoute, '/admin')
-})
 
 const appMenu = ref<typeof ElMenu>()
 
@@ -60,7 +34,6 @@ const appMenu = ref<typeof ElMenu>()
     ref="appMenu"
     :collapse="collapse"
     :default-active="activeIndex"
-    @select="handleSelect"
     router
     class="app-menu b-width-0! h-100vh overflow-y-auto"
   >
@@ -80,21 +53,26 @@ const appMenu = ref<typeof ElMenu>()
       </template>
     </el-menu-item>
     <el-divider style="--el-border-color: #1f2d3d" class="sticky! z-1" />
-    <template v-for="item in menuItems" :key="item.path">
-      <el-sub-menu v-if="item.children?.length" :index="item.path">
+    <template v-for="item in menuItems" :key="item.route">
+      <el-sub-menu
+        v-if="item.children?.length"
+        :index="item.route"
+        v-show="! item.hidden"
+      >
         <template #title>
           <el-icon size="18px" style="margin-right: var(--el-menu-base-level-padding);">
-            <Icon :icon="item.icon" />
+            <OIcon :icon="item.icon as string" />
           </el-icon>
           <span>{{ item.title }}</span>
         </template>
         <el-menu-item
           v-for="subItem in item.children"
-          :key="subItem.path"
-          :index="subItem.path"
+          :key="subItem.route"
+          :index="subItem.route"
+          v-show="! subItem.hidden"
         >
           <el-icon size="18px">
-            <Icon :icon="subItem.icon" />
+            <OIcon :icon="subItem.icon as string" />
           </el-icon>
           <template #title>
             <span>{{ subItem.title }}</span>
@@ -103,10 +81,10 @@ const appMenu = ref<typeof ElMenu>()
       </el-sub-menu>
       <el-menu-item
         v-else
-        :index="item.path"
+        :index="item.route"
       >
         <el-icon size="18px">
-          <Icon :icon="item.icon" />
+          <OIcon :icon="item.icon as string" />
         </el-icon>
         <template #title>
           <span>{{ item.title }}</span>

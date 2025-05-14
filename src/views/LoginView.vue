@@ -10,6 +10,8 @@ import { useMessage } from '@/composables/message.ts'
 import { signIn } from '@/api/auth.ts'
 import { useAuthorizationStore } from '@/stores/authorization.ts'
 import { useRoute, useRouter } from 'vue-router'
+import { refreshRoutes } from '@/utils/router.ts'
+import { useUserInfoStore } from '@/stores/user-info.ts'
 
 const route = useRoute()
 const router = useRouter()
@@ -55,14 +57,14 @@ const onLogin = async () => {
     signIn({
       username: formData.username,
       password: md5(formData.password).toString(),
-    }).then((res: ApiResponse) => {
+    }).then(async (res: ApiResponse) => {
       if (res.data?.code === 200) {
         disabled.value = true
         useMessage().success('登录成功')
         useAuthorizationStore().setToken(res.data.data)
-        setTimeout(() => {
-          router.push(unref(redirect))
-        }, 1500);
+        useUserInfoStore().refreshUserInfo()
+        await refreshRoutes();
+        await router.push(unref(redirect))
       } else {
         useMessage().error(res.data?.msg || '登录失败')
       }

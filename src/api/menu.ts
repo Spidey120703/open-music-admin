@@ -36,3 +36,11 @@ export function updateMenu(menuId: number, data: Partial<Menu>) {
 export function deleteMenu(menuId: number) {
   return request.delete(`/menu/${menuId}`)
 }
+
+export function getRoutes() {
+  return request.get(`/menu/routes`)
+}
+
+export function getMenus() {
+  return request.get(`/menu/menus`)
+}

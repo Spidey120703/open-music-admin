@@ -16,7 +16,7 @@ import { OIcon } from '@/components/common'
 
 const columns = reactive<Columns>([
   {
-    label: '菜单名',
+    label: '名称',
     prop: 'name',
     width: '240px'
   },

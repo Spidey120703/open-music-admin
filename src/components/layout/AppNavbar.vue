@@ -1,20 +1,28 @@
 <script setup lang="ts">
-import { type Ref, ref, computed, watch, nextTick, defineAsyncComponent } from 'vue'
-import { ElSelect } from 'element-plus'
+import { type Ref, ref, computed, watch, nextTick, defineAsyncComponent, unref } from 'vue'
+import { ElMessageBox, ElSelect } from 'element-plus'
 import {
   Expand,
   Fold,
   Search,
   Close,
   FullScreen,
-  ArrowDown,
   SwitchButton,
   Refresh,
-  User,
-  Lock,
-  Clock,
 } from '@element-plus/icons-vue'
 import { emitter } from '@/utils/emitter.ts'
+import { useDynamicRoutesStore } from '@/stores/dynamic-routes.ts'
+import { type RouteRecord, useRouter } from 'vue-router'
+import { OIcon } from '@/components/common'
+import { useMessage } from '@/composables/message.ts'
+import { useAuthorizationStore } from '@/stores/authorization.ts'
+import { storeToRefs } from 'pinia'
+
+const AppBreadcrumb = defineAsyncComponent(() => import('@/components/layout/AppBreadcrumb.vue'))
+const AppUserCard = defineAsyncComponent(() => import('@/components/layout/AppUserCard.vue'))
+
+
+const router = useRouter()
 
 const props = defineProps({
   collapse: {
@@ -23,7 +31,7 @@ const props = defineProps({
   }
 });
 
-const emits = defineEmits([
+const emit = defineEmits([
   'update:collapse'
 ]);
 
@@ -40,7 +48,7 @@ const emits = defineEmits([
  */
 const menubarCollapsed = computed({
   get: () => props.collapse,
-  set: (val) => emits('update:collapse', val)
+  set: (val) => emit('update:collapse', val)
 })
 
 /* 导航栏搜索配置 */
@@ -66,17 +74,16 @@ watch(navbarSearchHidden, (newVal) => {
   }
 })
 
+const state = useDynamicRoutesStore();
+const { dynamicRoutes } = storeToRefs(state)
+
 const searchInput: Ref<string> = ref('')
-const searchOptions = [
-  { label: '用户管理', value: '/users' },
-  { label: '资源管理', value: '/medias' },
-  { label: '音乐管理', value: '/musics' },
-  { label: '文章管理', value: '/posts' },
-  { label: '评论管理', value: '/comments' },
-  { label: '举报审核', value: '/audit/reports' },
-]
+const searchOptions = computed(() => unref(dynamicRoutes)
+  .map((route: RouteRecord) => ({ label: route.meta.title, value: route.path, icon: route.meta.icon })))
 watch(searchInput, (newVal) => {
-  console.log(newVal)
+  if (state.isPathValid(newVal)) {
+    router.push(newVal)
+  }
 })
 
 
@@ -115,9 +122,19 @@ function onRefresh() {
   }, 300)
 }
 
-const AppBreadcrumb = defineAsyncComponent(() => import('@/components/layout/AppBreadcrumb.vue'))
-const AppUserCard = defineAsyncComponent(() => import('@/components/layout/AppUserCard.vue'))
-
+const handleExit = () => {
+  ElMessageBox.confirm(
+    '确定退出系统吗？',
+    '提示',
+    {
+      type: 'warning',
+    }
+  )
+    .then(() => {
+      window.location.href = 'about:blank'
+    })
+    .catch(() => {})
+}
 
 </script>
 
@@ -165,7 +182,10 @@ const AppUserCard = defineAsyncComponent(() => import('@/components/layout/AppUs
           :key="item.value"
           :label="item.label"
           :value="item.value"
-        />
+        >
+          <OIcon :icon="item.icon as string" />
+          <span class="pl-1em">{{ item.label }}</span>
+        </el-option>
       </el-select>
     </div>
 
@@ -206,7 +226,7 @@ const AppUserCard = defineAsyncComponent(() => import('@/components/layout/AppUs
         text
         size="large"
         class="px-18px! h-100%! hover:bg-red! hover:color-white!"
-        @click="menubarCollapsed = !menubarCollapsed"
+        @click="handleExit"
       >
         <el-icon size="20px">
           <SwitchButton />

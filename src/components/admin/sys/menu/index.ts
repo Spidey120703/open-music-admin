@@ -1,5 +1,7 @@
+import { defineAsyncComponent } from 'vue'
 import MenuTable from './table.vue'
-import MenuForm from './form.vue'
+
+const MenuForm = defineAsyncComponent(() => import('./form.vue'));
 
 export {
   MenuTable,

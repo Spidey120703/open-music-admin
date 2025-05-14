@@ -50,7 +50,8 @@ const createBlob = () => {
   Object.assign(blob.style, {
     width: `${width}px`,
     height: `${height}px`,
-    background: `hsla(${hue}, 70%, 60%, 0.15)`,
+    background: `hsla(${hue}, 70%, 60%, 0.5)`,
+    // background: `hsla(${hue}, 70%, 60%, 0.15)`,
     position: 'absolute',
     transform: `translate(${translateX}px, ${translateY}px) rotate(${rotate}deg)`,
     willChange: 'transform, border-radius'
@@ -58,9 +59,9 @@ const createBlob = () => {
 
   blob.animate(
     Array.from({ length: random(3, 16) }, () => ({
-      transform: `translate(${random(-100, 100)}px, ${random(-100, 100)}px) rotate(${random(-18, 18)}deg)`
+      transform: `translate(${random(-200, 200)}px, ${random(-200, 200)}px) rotate(${random(-18, 18)}deg)`
     })), {
-      duration: random(60000, 120000),
+      duration: random(30000, 120000),
       easing: 'linear',
       iterations: Infinity,
       fill: 'forwards',
@@ -91,7 +92,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div ref="bgContainer" class="absolute inset-0 z-0" style="filter: blur(10px);" />
+  <div ref="bgContainer" class="absolute inset-0 z-0" style="filter: blur(100px);" />
 </template>
 
 <style scoped>

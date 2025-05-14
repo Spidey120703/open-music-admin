@@ -1,18 +1,39 @@
 <script setup lang="ts">
 import { ArrowRight } from '@element-plus/icons-vue'
-import { useRoute } from 'vue-router'
+import {
+  type RouteRecord,
+  type RouteRecordNormalized,
+  type RouteRecordRaw,
+  useRoute
+} from 'vue-router'
 import { ref, unref, computed } from 'vue'
 import { Icon } from '@iconify/vue'
 import { ElBreadcrumb, ElBreadcrumbItem, ElMenu, ElMenuItem, ClickOutside as vClickOutside } from 'element-plus'
 import { joinPath } from '@/utils/path.ts'
+import { useMenuItemsStore } from '@/stores/menu.ts'
+import type { Menu } from '@/types'
+import { storeToRefs } from 'pinia'
 
 const route = useRoute()
 
 const INDEX_PATH = '/admin/index'
 
-const parentRoute = computed(() => {
-  if (route.matched.length < 3) return null
-  return route.matched[1]
+const state = useMenuItemsStore()
+const { menuItems } = storeToRefs(state)
+
+const parentMenuItem = computed(() => {
+  // if (route.matched.length < 3) return null
+  // return route.matched[1]
+  /**
+   * 在子菜单中搜索 - 定制函数 - 无通用功能
+   * @param routes
+   */
+  const searchSubMenuItem = (routes: Menu[]) : (Menu | undefined) => {
+    return routes.find(r => r.route == route.fullPath || searchSubMenuItem(r.children || []))
+  }
+  const currentRouteRecord = unref(menuItems).find(r => searchSubMenuItem(r.children || []))
+  if (! currentRouteRecord) return null
+  return currentRouteRecord
 })
 
 const visible = ref<boolean>(false)
@@ -34,13 +55,13 @@ const activeIndex = computed(() => {
       <transition-group name="breadcrumb">
         <el-breadcrumb-item to="/admin/index" :key="INDEX_PATH">首页</el-breadcrumb-item>
         <el-breadcrumb-item
-          v-if="parentRoute"
-          :key="parentRoute.path"
+          v-if="parentMenuItem"
+          :key="parentMenuItem.route"
           v-popover="popoverRef"
           v-click-outside="onClickOutside"
           :to="{}"
         >
-          {{ parentRoute.meta.title }}
+          {{ parentMenuItem.title }}
         </el-breadcrumb-item>
         <el-breadcrumb-item v-if="route.fullPath !== INDEX_PATH" :key="route.fullPath">
           {{ route.meta.title }}
@@ -49,7 +70,7 @@ const activeIndex = computed(() => {
     </el-breadcrumb>
 
     <el-popover
-      v-if="parentRoute && parentRoute?.children"
+      v-if="parentMenuItem && parentMenuItem?.children"
       v-model:visible="visible"
       ref="popoverRef"
       trigger="click"
@@ -60,16 +81,16 @@ const activeIndex = computed(() => {
     >
       <el-menu router class="b-width-0!" :default-active="activeIndex">
         <el-menu-item
-          v-for="route in parentRoute.children"
-          :key="route.name"
-          :index="joinPath(parentRoute.path, route.path)"
+          v-for="subMenuItem in parentMenuItem.children"
+          :key="subMenuItem.name"
+          :index="subMenuItem.route"
           @click="visible = false"
         >
-          <el-icon v-if="route.meta?.icon" size="18px">
-            <Icon :icon="route.meta?.icon as string" />
+          <el-icon v-if="subMenuItem.icon" size="18px">
+            <Icon :icon="subMenuItem.icon as string" />
           </el-icon>
           <template #title>
-            <span>{{ route.meta?.title }}</span>
+            <span>{{ subMenuItem.title }}</span>
           </template>
         </el-menu-item>
       </el-menu>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import type { ApiError, ApiResponse, Menu } from '@/types'
+import { type ApiError, type ApiResponse, type Menu, MenuType } from '@/types'
 import { computed, onMounted, ref, unref, watch } from 'vue'
 import { getMenusByRootId } from '@/api/menu.ts'
 import type { TreeInstance } from 'element-plus'
@@ -43,13 +43,13 @@ watch(
         .then((res: ApiResponse<Menu[]>) => {
           data.value = res.data.data
         })
-        .catch()
+        .catch(() => {})
         .finally(() => loading.value = false)
       getAuthoritiesByRoleId(props.roleId)
         .then((res: ApiResponse<number[]>) => {
           unref(treeRef)?.setCheckedKeys(res.data.data)
         })
-        .catch()
+        .catch(() => {})
         .finally(() => loading.value = false)
     }
   }
@@ -75,7 +75,7 @@ const handleSubmit = () => {
         useMessage().success(res.data.msg || '设置成功')
         open.value = false;
       })
-      .catch()
+      .catch(() => {})
       .finally(() => {
         requestLock.value = false
       })
@@ -86,20 +86,34 @@ const handleSubmit = () => {
 
 <template>
   <el-dialog v-model="open" title="授权树" draggable width="600px">
-    <el-tree
-      ref="treeRef"
-      v-loading="loading"
-      style="max-width: 600px"
-      :data="data"
-      show-checkbox
-      check-strictly
-      node-key="id"
-      :props="{
-        children: 'children',
-        label: 'title',
-      }"
+    <el-scrollbar
+      max-height="75vh"
       class="b b-[var(--el-border-color)] b-solid rd-4px overflow-hidden"
-    />
+    >
+      <el-tree
+        ref="treeRef"
+        v-loading="loading"
+        style="max-width: 600px"
+        :data="data"
+        show-checkbox
+        check-strictly
+        node-key="id"
+        :props="{
+          children: 'children',
+          label: 'title',
+        }"
+      >
+        <template #default="{ node, data }">
+          <span>{{ node.label }}</span>
+          <el-tag
+            disable-transitions
+            size="small"
+            :type="data.type === MenuType.OPERATION ? 'success' : 'primary'"
+            class="ml-1em"
+          >{{ data.type === MenuType.OPERATION ? '操作' : '菜单' }}</el-tag>
+        </template>
+      </el-tree>
+    </el-scrollbar>
     <template #footer>
       <el-popconfirm
         class="box-item"

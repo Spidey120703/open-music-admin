@@ -12,7 +12,6 @@ import _ from 'lodash'
 const formRef = ref<FormInstance>()
 
 const open = defineModel<boolean>('open', { default: false })
-// const formData = defineModel<Record<string, any>>('formData', { default: () => ({}) })
 
 const formData = ref<Record<string, any>>({})
 
@@ -21,7 +20,7 @@ const props = withDefaults(defineProps<
     title?: string
     items: FormItemConfig[],
     editId?: number,
-    addData: (formData: Record<string, any>) => Promise<ApiResponse>,
+    addData?: (formData: Record<string, any>) => Promise<ApiResponse>,
     updateDataById?: (id: number, formData: Record<string, any>) => Promise<ApiResponse>,
     getDataById?: (id: number) => Promise<ApiResponse>,
     initialFormData?: Record<string, any>,
@@ -67,12 +66,18 @@ const $items = computed(() => props.items
   }, item)))
 
 const emit = defineEmits<{
+  'saved': [],
   'cancel': [],
   'submit': [formData: Record<string, any>],
   'invalid-submit': [formData: Record<string, any>, invalidFields?: ValidateFieldsError]
 }>()
 
 const slots = defineSlots<{
+  footer: (
+    props: {
+      formData: Record<string, any>
+    }
+  ) => void,
   [key: string]: (
     props: {
       formData: Record<string, any>,
@@ -102,6 +107,10 @@ const handleSubmit = () => {
   formRef.value?.validate((valid: boolean, invalidFields?: ValidateFieldsError) => {
     if (valid) {
       const data = unref(formData)
+      // // 获取表单数据，并筛选表单数据
+      // const data = _.pick(
+      //   unref(formData),
+      //   props.items.map((item: FormItemConfig) => item.prop ?? '_'))
       // 请求锁加锁
       requestLock.value = true
       if (_.isNumber(props.editId)) {
@@ -111,21 +120,23 @@ const handleSubmit = () => {
             useMessage().success(res.data.msg || '修改成功')
             resetForm()
             open.value = false
+            emit('saved')
           })
-          .catch()
+          .catch(() => {})
           .finally(() => {
             // 解锁请求锁
             requestLock.value = false
           })
       } else {
-        props.addData(data)
+        props.addData?.(data)
           .then((res: ApiResponse) => {
             emitter.emit('refresh')
             useMessage().success(res.data.msg || '添加成功')
             resetForm()
             open.value = false
+            emit('saved')
           })
-          .catch()
+          .catch(() => {})
           .finally(() => {
             // 解锁请求锁
             requestLock.value = false
@@ -139,18 +150,34 @@ const handleSubmit = () => {
   })
 }
 
+const loading = ref<boolean>(false)
+
+// 监听打开状态
 watch(
   open,
-  () => {
+  (newVal) => {
+    if (! newVal) return;
+    // 重置表单
     resetForm();
+    // 获取编辑数据，如果是编辑状态话，且存在获取数据的函数
     if (_.isNumber(props.editId) && _.isFunction(props.getDataById)) {
+      loading.value = true;
       props.getDataById(props.editId)
         .then((res: ApiResponse) => {
           formData.value = res.data.data
         })
         .catch(() => {})
+        .finally(() => loading.value = false)
     }
 })
+
+watch(
+  () => props.initialFormData,
+  (val) => {
+    formData.value = Object.assign({}, val)
+  }
+  , { immediate: true, deep: true }
+)
 
 </script>
 
@@ -178,6 +205,7 @@ watch(
       :size="size"
       :disabled="disabled"
       :scroll-to-error="scrollToError"
+      v-loading="loading"
     >
       <el-row>
         <el-col
@@ -245,6 +273,21 @@ watch(
               v-model="formData[item.prop ?? '_']"
               v-bind="item.config"
             />
+            <el-input-tag
+              v-else-if="item.type === 'input-tag'"
+              v-model="formData[item.prop ?? '_']"
+              v-bind="item.config"
+            />
+            <el-date-picker
+              v-else-if="item.type === 'date-picker'"
+              v-model="formData[item.prop ?? '_']"
+              v-bind="item.config"
+            />
+            <el-input-number
+              v-else-if="item.type === 'input-number'"
+              v-model="formData[item.prop ?? '_']"
+              v-bind="item.config"
+            />
           </el-form-item>
           <slot
             v-else
@@ -256,21 +299,28 @@ watch(
       </el-row>
     </el-form>
     <template #footer>
-      <el-popconfirm
-        class="box-item"
-        title="确定不保存吗？"
-        placement="bottom-end"
-        :hide-after="0"
-        @confirm="handleCancel"
-      >
-        <template #reference>
-          <el-button>取消</el-button>
-        </template>
-      </el-popconfirm>
-      <el-button type="primary" @click="handleSubmit">保存</el-button>
+      <slot name="footer" :form-data="formData">
+        <el-popconfirm
+          class="box-item"
+          title="确定不保存吗？"
+          placement="bottom-end"
+          :hide-after="0"
+          @confirm="handleCancel"
+        >
+          <template #reference>
+            <el-button>取消</el-button>
+          </template>
+        </el-popconfirm>
+        <el-button type="primary" @click="handleSubmit">保存</el-button>
+      </slot>
     </template>
   </el-dialog>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
+:deep(.el-form-item__content) {
+  .el-input {
+    flex: 1;
+  }
+}
 </style>

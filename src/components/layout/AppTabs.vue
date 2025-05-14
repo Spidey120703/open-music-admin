@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { computed, ref, unref, watch } from 'vue'
+import { type RouteRecord, useRoute, useRouter } from 'vue-router'
 import type { TabPaneName } from 'element-plus'
 import { Icon } from '@iconify/vue'
+import { useDynamicRoutesStore } from '@/stores/dynamic-routes.ts'
 
 const route = useRoute()
 const router = useRouter()
@@ -22,35 +23,22 @@ const pageTabs = ref<TabItem[]>([
   }
 ])
 
-const validPaths = new Set([
+const validPaths = computed(() => [
   '/admin/index',
-  '/admin/dashboard',
-  '/admin/perm/user',
-  '/admin/perm/role',
-  '/admin/perm/log',
-  '/admin/sys/menu',
-  '/admin/sys/home',
-  '/admin/user/info',
-  '/admin/user/password',
-  '/admin/user/device',
-  '/admin/music/song',
-  '/admin/music/artist',
-  '/admin/music/album',
-  '/admin/post/article',
-  '/admin/post/comment',
-  '/admin/cloud/file',
+  ... unref(useDynamicRoutesStore().dynamicRoutes)
+    .map((route: RouteRecord) => route.path)
 ])
 
 // 路由变化监听
 watch(
   () => route.fullPath,
   (newPath) => {
-    if (!validPaths.has(route.path)) {
+    if (! unref(validPaths).includes(newPath)) {
       pageTabsValue.value = '/empty'
       return
     }
 
-    const existingTab = pageTabs.value.find((tab) => tab.path === route.path)
+    const existingTab = pageTabs.value.find((tab) => tab.path === newPath)
 
     if (existingTab) {
       pageTabsValue.value = existingTab.path

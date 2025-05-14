@@ -1,14 +1,14 @@
 <script setup lang="ts">
 
-import { OFormDialog } from '@/components/common'
+import { OAvatarUploader, OFormDialog } from '@/components/common'
 import { computed, onMounted, ref, watch } from 'vue'
 import type { FormItemConfig } from '@/components/common/FormDialog/types.ts'
 import { addUser, getUserById, updateUserById } from '@/api/user.ts'
 import _ from 'lodash'
-import { getRolesByPage } from '@/api/role.ts'
 import type { Role, User } from '@/types'
 
 const props = withDefaults(defineProps<{
+  roles: Role[],
   editId?: number
 }>(), {
   editId: undefined,
@@ -33,7 +33,7 @@ watch(
       {
         span: 24,
         prop: 'avatar',
-        type: 'avatar'
+        type: 'avatar-input'
       },
       {
         span: 12,
@@ -137,12 +137,11 @@ watch(
   }
 )
 
-const roles = ref<Role[]>([]);
-onMounted(async () => {
-  const { data } = await getRolesByPage({ size: -1 });
-  roles.value = data.data.records;
-  initialFormData.value.role = roles.value.find((role: Role) => role.id === 1)
-})
+watch(
+  () => props.roles,
+  async () => {
+    initialFormData.value.role = props.roles.find((role: Role) => role.id === 2)
+  })
 
 </script>
 
@@ -159,7 +158,7 @@ onMounted(async () => {
     :get-data-by-id="getUserById"
     header-class="relative z-1 immersive-header"
   >
-    <template #avatar="{ formData, columnConfig }">
+    <template #avatar-input="{ formData, columnConfig }">
       <div
         class="w-[calc(100%+32px)] h-128px flex justify-center items-center mx--16px mb-72px mt--80px bg-gray relative"
         :style="{
@@ -170,8 +169,8 @@ onMounted(async () => {
           background-position: center;
         "
       >
-        <el-avatar
-          :src="formData[columnConfig.prop ?? '_'] ?? ''"
+        <OAvatarUploader
+          v-model="formData[columnConfig.prop ?? '_']"
           :size="100"
           fit="cover"
           class="absolute bottom--50px"

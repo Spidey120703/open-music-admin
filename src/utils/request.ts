@@ -4,6 +4,7 @@ import { useMessage } from '@/composables/message.ts'
 import { useAuthorizationStore } from '@/stores/authorization.ts'
 import { unref } from 'vue'
 import router from '@/router'
+import { loadStaticRoutes } from '@/utils/router.ts'
 
 export const request = axios.create({
   baseURL: '/api',
@@ -35,6 +36,9 @@ request.interceptors.response.use(
     console.warn(error)
     if (error.response.status === 401) {
       useAuthorizationStore().deleteToken()
+      if (router.getRoutes().length === 0) {
+        loadStaticRoutes();
+      }
       router.push({ name: 'login', query: { redirect: unref(router.currentRoute).fullPath } })
         .then()
     }

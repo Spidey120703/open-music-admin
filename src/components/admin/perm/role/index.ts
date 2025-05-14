@@ -1,6 +1,8 @@
+import { defineAsyncComponent } from 'vue'
 import RoleTable from './table.vue'
-import RoleForm from './form.vue'
-import GrantTree from './grant.vue'
+
+const RoleForm = defineAsyncComponent(() => import('./form.vue'));
+const GrantTree = defineAsyncComponent(() => import('./grant.vue'));
 
 export {
   RoleTable,

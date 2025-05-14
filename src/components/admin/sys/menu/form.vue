@@ -1,13 +1,14 @@
 <script setup lang="ts">
 
 import { OFormDialog } from '@/components/common'
-import { computed, reactive, watch } from 'vue'
+import { computed, reactive } from 'vue'
 import type { FormItemConfig } from '@/components/common/FormDialog/types.ts'
 import { MenuType } from '@/types'
 import { addMenu, getMenuById, updateMenu } from '@/api/menu.ts'
 import { withPathId } from '@/utils/api.ts'
 import { matchIcons } from '@/components/common/Icon/list.ts'
 import { OIcon } from '@/components/common'
+import { refreshRoutes } from '@/utils/router.ts'
 
 const props = withDefaults(defineProps<{
   editId?: number
@@ -46,7 +47,7 @@ const items = reactive<FormItemConfig[]>([
   },
   {
     span: 12,
-    label: '菜单名',
+    label: '名称',
     prop: 'name',
     type: 'input',
   },
@@ -125,6 +126,7 @@ const items = reactive<FormItemConfig[]>([
     :add-data="withPathId(addMenu, 'parentId')"
     :update-data-by-id="updateMenu"
     :get-data-by-id="getMenuById"
+    @saved="refreshRoutes()"
   >
     <template #icon-name-autocomplete="{ formData, columnConfig }">
       <el-autocomplete

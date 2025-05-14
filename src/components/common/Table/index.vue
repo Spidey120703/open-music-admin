@@ -185,7 +185,7 @@ const $operations = ref<Operation[]>(
               useMessage().success(res.data.msg || '删除成功')
               load(params)
             })
-            .catch()
+            .catch(() => {})
         }
       }
     }
@@ -222,11 +222,14 @@ const useSearch = (params: Reactive<Params>) => {
 
   const searchSubmit = () => {
     params.keyword = searchInput.value
+    load(params)
   }
 
   const searchReset = () => {
     params.keyword = ''
+    searchInput.value = ''
     params.$reset!('current')
+    load(params)
   }
 
   return {
@@ -378,7 +381,7 @@ const handleImportData = () => {
         useMessage().error(res.data?.msg || '导入失败')
       }
     })
-    .catch()
+    .catch(() => {})
 }
 
 const handleExportData = () => {
@@ -393,7 +396,7 @@ const handleExportData = () => {
         useMessage().error(res.data?.msg || '导出失败')
       }
     })
-    .catch()
+    .catch(() => {})
 }
 
 const tableRef = ref<typeof ElTable>();
@@ -437,7 +440,10 @@ const tableRef = ref<typeof ElTable>();
       </el-button-group>
     </el-card>
     <el-card class="flex-1">
-      <div style="margin-bottom: var(--el-card-padding)">
+      <div
+        v-if="addition || selection"
+        style="margin-bottom: var(--el-card-padding); height: 32px;"
+      >
         <el-button
           v-if="addition"
           type="primary"
@@ -446,10 +452,10 @@ const tableRef = ref<typeof ElTable>();
         >添加</el-button
         >
         <el-button
-          v-if="selection && tableRef?.getSelectionRows().length"
           type="danger"
           :icon="Delete"
           class="float-right"
+          :disabled="! (selection && tableRef?.getSelectionRows().length)"
         >批量删除</el-button
         >
       </div>
@@ -457,7 +463,7 @@ const tableRef = ref<typeof ElTable>();
         ref="tableRef"
         v-loading="loading"
         :data="records"
-        :height="`calc(100% - ${2 + (Number(addition) + Number(isPaging)) * 50}px)`"
+        :height="`calc(100% - ${2 + (Number(addition) + Number(selection) + Number(isPaging)) * 50}px)`"
         class="w-100%"
         border
         show-overflow-tooltip

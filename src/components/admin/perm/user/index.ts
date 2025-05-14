@@ -1,7 +1,11 @@
+import { defineAsyncComponent } from 'vue'
 import UserTable from './table.vue'
-import UserForm from './form.vue'
+
+const UserForm = defineAsyncComponent(() => import('./form.vue'));
+const UserPasswordForm = defineAsyncComponent(() => import('./password.vue'));
 
 export {
   UserTable,
-  UserForm
+  UserForm,
+  UserPasswordForm
 }
